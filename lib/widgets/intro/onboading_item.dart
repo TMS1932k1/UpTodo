@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/widgets/title_subtitle_text.dart';
+import 'package:todo_app/widgets/intro/title_subtitle_text.dart';
 
 class OnboadingItem extends StatelessWidget {
   const OnboadingItem({
