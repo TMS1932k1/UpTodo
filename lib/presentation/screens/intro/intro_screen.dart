@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/app_constant.dart';
-import 'package:todo_app/screens/intro/onboading_screen.dart';
+import 'package:todo_app/presentation/screens/intro/onboading_screen.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});

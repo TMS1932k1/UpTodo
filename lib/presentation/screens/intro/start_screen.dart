@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
-import 'package:todo_app/screens/auth/auth_screem.dart';
-import 'package:todo_app/widgets/intro/title_subtitle_text.dart';
+import 'package:todo_app/presentation/screens/auth/auth_screen.dart';
+import 'package:todo_app/presentation/widgets/intro/title_subtitle_text.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});

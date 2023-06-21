@@ -10,6 +10,7 @@ class InputTextField extends StatelessWidget {
     required this.validator,
     this.controller,
     this.textInputType,
+    this.onSaved,
   });
 
   final String title;
@@ -18,6 +19,7 @@ class InputTextField extends StatelessWidget {
   final String? Function(String?) validator;
   final TextEditingController? controller;
   final TextInputType? textInputType;
+  final Function(String?)? onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,8 @@ class InputTextField extends StatelessWidget {
               ),
               validator: validator,
               obscureText: isObscure,
+              onSaved: onSaved,
+              maxLines: 1,
             ),
           ),
         ],

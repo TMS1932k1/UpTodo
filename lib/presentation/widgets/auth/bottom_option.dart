@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
+import 'package:todo_app/business_logic/cubits/auth/auth_loading_state.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
-import 'package:todo_app/widgets/auth/login_option_button.dart';
+import 'package:todo_app/data/repositories/auth_firebase.dart';
+import 'package:todo_app/presentation/widgets/auth/login_option_button.dart';
 
 class BottomOption extends StatelessWidget {
   const BottomOption({
@@ -13,8 +17,35 @@ class BottomOption extends StatelessWidget {
   final bool isLogin;
   final void Function() changeMode;
 
+  void showSnackBarError(BuildContext context, String mes) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mes),
+        duration: const Duration(milliseconds: 2000),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    void signInWithGoogleAccount() async {
+      // Set state to start loading
+      BlocProvider.of<AuthLoadingCubit>(context).startLoading();
+
+      final error = await signInWithGoogle();
+
+      if (context.mounted) {
+        if (error != null) {
+          showSnackBarError(context, error);
+        }
+
+        // Set state to start loading
+        BlocProvider.of<AuthLoadingCubit>(context).stopLoading();
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.only(bottom: kPaddingSmall),
       child: Column(
@@ -28,9 +59,20 @@ class BottomOption extends StatelessWidget {
                 ),
           ),
           const SizedBox(height: kPaddingMedium),
-          const LoginOptionButton(
-            text: 'Login with Google',
-            icon: FaIcon(FontAwesomeIcons.google),
+          BlocBuilder<AuthLoadingCubit, AuthLoadingState>(
+            builder: (context, state) {
+              void Function()? onClick;
+
+              if (!state.isLoading) {
+                onClick = signInWithGoogleAccount;
+              }
+
+              return LoginOptionButton(
+                text: 'Login with Google',
+                icon: const FaIcon(FontAwesomeIcons.google),
+                onClick: onClick,
+              );
+            },
           ),
           const SizedBox(height: kPaddingSmall),
           const LoginOptionButton(

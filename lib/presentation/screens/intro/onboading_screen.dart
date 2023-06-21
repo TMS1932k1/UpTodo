@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/app_constant.dart';
-import 'package:todo_app/screens/intro/start_screen.dart';
-import 'package:todo_app/widgets/intro/onboading_item.dart';
+import 'package:todo_app/presentation/screens/intro/start_screen.dart';
+import 'package:todo_app/presentation/widgets/intro/onboading_item.dart';
 
 class OnboadingScreen extends StatefulWidget {
   const OnboadingScreen({super.key});

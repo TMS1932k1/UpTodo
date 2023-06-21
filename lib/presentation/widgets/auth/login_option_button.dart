@@ -33,6 +33,8 @@ class LoginOptionButton extends StatelessWidget {
         label: Text(
           text,
           style: Theme.of(context).textTheme.bodyMedium,
+          overflow: TextOverflow.clip,
+          maxLines: 1,
         ),
       ),
     );
