@@ -5,6 +5,7 @@ final themeLight = ThemeData.light().copyWith(
   colorScheme: const ColorScheme.light().copyWith(
     background: Colors.white,
     onBackground: Colors.black,
+    surface: const Color(0xff363636),
     onPrimary: const Color(0xff8875FF),
   ),
   textTheme: TextTheme(
@@ -22,6 +23,10 @@ final themeLight = ThemeData.light().copyWith(
       fontSize: 16,
       color: Colors.black,
       fontWeight: FontWeight.bold,
+    ),
+    bodyLarge: GoogleFonts.lato().copyWith(
+      fontSize: 20,
+      color: Colors.black,
     ),
     bodyMedium: GoogleFonts.lato().copyWith(
       fontSize: 16,
@@ -52,6 +57,7 @@ final themeDark = ThemeData.dark().copyWith(
   colorScheme: const ColorScheme.dark().copyWith(
     background: Colors.black,
     onBackground: Colors.white,
+    surface: const Color(0xff363636),
     onPrimary: const Color(0xff8875FF),
   ),
   textTheme: TextTheme(
@@ -69,6 +75,10 @@ final themeDark = ThemeData.dark().copyWith(
       fontSize: 16,
       color: Colors.white,
       fontWeight: FontWeight.bold,
+    ),
+    bodyLarge: GoogleFonts.lato().copyWith(
+      fontSize: 20,
+      color: Colors.white,
     ),
     bodyMedium: GoogleFonts.lato().copyWith(
       fontSize: 16,

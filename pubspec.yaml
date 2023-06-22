@@ -71,6 +71,13 @@ flutter:
     - assets/images/onboading_one.png
     - assets/images/onboading_two.png
     - assets/images/onboading_three.png
+    - assets/images/calendar.png
+    - assets/images/calendar_bold.png
+    - assets/images/clock.png
+    - assets/images/clock_bold.png
+    - assets/images/home.png
+    - assets/images/home_bold.png
+    - assets/images/user.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

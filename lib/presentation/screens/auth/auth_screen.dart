@@ -63,8 +63,12 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
 
-    // set state to start loading
+    // Hide keyboard
+    FocusScope.of(context).unfocus();
+
+    // Set state to start loading
     BlocProvider.of<AuthLoadingCubit>(context).startLoading();
+
     if (_isLogin) {
       error = await signInWithEmailAndPassword(_auth);
     } else {
@@ -73,8 +77,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     if (error != null) {
       _showSnackBarError(error);
     }
+
     if (mounted) {
-      // set state to stop loading
+      // Set state to stop loading
       BlocProvider.of<AuthLoadingCubit>(context).stopLoading();
     }
   }
