@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
@@ -14,10 +15,15 @@ bool? isFirst;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// Init firebase on app
+  // Set orientation only portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
+  // Init firebase on app
   await Firebase.initializeApp();
 
-  /// Get [isFirst] in SF, check this is first run app
+  // Get [isFirst] in SF, check this is first run app
   final prefs = await SharedPreferences.getInstance();
   isFirst = prefs.getBool('isFirst');
   await prefs.setBool('isFirst', true);

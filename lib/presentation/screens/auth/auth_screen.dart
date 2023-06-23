@@ -4,7 +4,7 @@ import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_state.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/presentation/widgets/auth/bottom_option.dart';
-import 'package:todo_app/presentation/widgets/auth/input_text_field.dart';
+import 'package:todo_app/presentation/widgets/auth/title_text_field.dart';
 import 'package:todo_app/data/repositories/auth_firebase.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -150,6 +150,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: kPaddingSmall),
         child: Column(
@@ -172,7 +173,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                           key: _formKey,
                           child: Column(
                             children: [
-                              InputTextField(
+                              TitleTextField(
                                 title: 'Email',
                                 hint: 'Enter your Email',
                                 validator: _validatorEmail,
@@ -180,7 +181,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                                 onSaved: (email) => _auth['email'] = email!,
                               ),
                               const SizedBox(height: kPaddingSmall),
-                              InputTextField(
+                              TitleTextField(
                                 title: 'Password',
                                 hint: 'Enter your Password',
                                 isObscure: true,
@@ -199,7 +200,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                                   minHeight: !_isLogin ? 100 : 0,
                                 ),
                                 child: SingleChildScrollView(
-                                  child: InputTextField(
+                                  child: TitleTextField(
                                     title: 'Confirm Password',
                                     hint: 'Confirm your Password',
                                     isObscure: true,

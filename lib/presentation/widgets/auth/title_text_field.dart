@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
+import 'package:todo_app/presentation/widgets/cus_text_field.dart';
 
-class InputTextField extends StatelessWidget {
-  const InputTextField({
+class TitleTextField extends StatelessWidget {
+  const TitleTextField({
     super.key,
     required this.title,
     this.hint,
@@ -34,28 +35,13 @@ class InputTextField extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.only(top: kRadiusSmall),
-            child: TextFormField(
+            child: CusTextField(
               controller: controller,
               keyboardType: textInputType,
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.grey),
-                border: const OutlineInputBorder(),
-                errorStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.red),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: kPaddingSmall,
-                ),
-              ),
-              validator: validator,
-              obscureText: isObscure,
+              isObscure: isObscure,
+              hint: hint,
               onSaved: onSaved,
-              maxLines: 1,
+              validator: validator,
             ),
           ),
         ],

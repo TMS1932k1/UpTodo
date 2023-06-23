@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/presentation/widgets/home/home_btn_nav_bar.dart';
 import 'package:todo_app/presentation/widgets/home/home_drawer.dart';
+import 'package:todo_app/presentation/widgets/home/new_task_btn_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,21 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       currentIndex = newIndex;
     });
+  }
+
+  /// Show bottom sheet to add new task
+  void showAddTaskBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(16),
+          right: Radius.circular(16),
+        ),
+      ),
+      builder: (context) => const NewTaskBtnSheet(),
+    );
   }
 
   @override
@@ -43,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 64,
           height: 64,
           child: FloatingActionButton(
-            onPressed: () {
-              // Add new index
-            },
+            onPressed: showAddTaskBottomSheet,
             elevation: 0,
             backgroundColor: Theme.of(context).colorScheme.primary,
             child: FaIcon(
