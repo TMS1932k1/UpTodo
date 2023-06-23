@@ -21,6 +21,7 @@ class ConfirmSignOutDialog extends StatelessWidget {
         TextButton(
           onPressed: () async {
             await FirebaseAuth.instance.signOut();
+            if (context.mounted) Navigator.of(context).pop();
           },
           child: Text(
             'Confirm',

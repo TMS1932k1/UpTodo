@@ -5,7 +5,7 @@ final themeLight = ThemeData.light().copyWith(
   colorScheme: const ColorScheme.light().copyWith(
     background: Colors.white,
     onBackground: Colors.black,
-    surface: const Color(0xff363636),
+    surface: Colors.grey,
     onPrimary: const Color(0xff8875FF),
   ),
   textTheme: TextTheme(
