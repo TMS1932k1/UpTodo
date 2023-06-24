@@ -10,6 +10,7 @@ class CusTextField extends StatelessWidget {
     this.validator,
     required this.isObscure,
     this.onSaved,
+    this.maxLength,
   });
 
   final TextEditingController? controller;
@@ -18,6 +19,7 @@ class CusTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final Function(String?)? onSaved;
   final bool isObscure;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class CusTextField extends StatelessWidget {
       obscureText: isObscure,
       onSaved: onSaved,
       maxLines: 1,
+      maxLength: maxLength,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
+import 'package:todo_app/business_logic/cubits/home/add_loading_cubit.dart';
 import 'package:todo_app/presentation/screens/auth/auth_screen.dart';
 import 'package:todo_app/presentation/screens/home/home_screen.dart';
 import 'package:todo_app/presentation/screens/intro/intro_screen.dart';
@@ -36,8 +37,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthLoadingCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthLoadingCubit>(
+          create: (context) => AuthLoadingCubit(),
+        ),
+        BlocProvider<AddLoadingCubit>(
+          create: (context) => AddLoadingCubit(),
+        )
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: themeLight,

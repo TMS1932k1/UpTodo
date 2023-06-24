@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Task {
   final String id;
   String title;
   String? description;
   int? flag;
-  DateTime? dateTime;
+  Timestamp? dateTime;
   int? category;
   bool isCompleted;
 
@@ -12,8 +14,8 @@ class Task {
     required this.title,
     this.description,
     this.flag,
-    required this.dateTime,
-    required this.category,
-    required this.isCompleted,
+    this.dateTime,
+    this.category,
+    this.isCompleted = false,
   });
 }
