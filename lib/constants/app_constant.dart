@@ -14,6 +14,7 @@ const clockBoldImage = 'assets/images/clock_bold.png';
 const homeImage = 'assets/images/home.png';
 const homeBoldImage = 'assets/images/home_bold.png';
 const userImage = 'assets/images/user.png';
+const emptyListImage = 'assets/images/empty_list.png';
 
 final List<Map<String, dynamic>> homePages = [
   {

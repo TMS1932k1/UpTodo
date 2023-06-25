@@ -24,18 +24,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Show bottom sheet to add new task
-  void showAddTaskBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(16),
-          right: Radius.circular(16),
+  void showAddTaskBottomSheet(bool isTablet) {
+    if (!isTablet) {
+      showModalBottomSheet(
+        context: context,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(16),
+            right: Radius.circular(16),
+          ),
         ),
-      ),
-      builder: (context) => const NewTaskBtnSheet(),
-    );
+        builder: (context) => const NewTaskBtnSheet(),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => const Dialog(
+          elevation: 0,
+          child: SizedBox(
+            width: 450,
+            child: NewTaskBtnSheet(),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -59,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 64,
           height: 64,
           child: FloatingActionButton(
-            onPressed: showAddTaskBottomSheet,
+            onPressed: () => showAddTaskBottomSheet(isTablet),
             elevation: 0,
             backgroundColor: Theme.of(context).colorScheme.primary,
             child: FaIcon(

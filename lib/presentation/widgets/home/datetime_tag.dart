@@ -13,11 +13,18 @@ class DateTimeTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check datetime is same as today
+    final bool isToday = (dateTime.day == DateTime.now().day &&
+        dateTime.month == DateTime.now().month &&
+        dateTime.year == DateTime.now().year);
+
     return GestureDetector(
       onTap: onClick,
       child: Text(
-        DateFormat('yyyy/MM/dd – kk:mm').format(dateTime),
-        style: Theme.of(context).textTheme.bodyMedium,
+        isToday
+            ? 'Today - ${DateFormat('kk:mm').format(dateTime)}'
+            : DateFormat('yyyy/MM/dd – kk:mm').format(dateTime),
+        style: Theme.of(context).textTheme.bodySmall,
       ),
     );
   }

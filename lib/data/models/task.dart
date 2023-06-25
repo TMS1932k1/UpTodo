@@ -18,4 +18,13 @@ class Task {
     this.category,
     this.isCompleted = false,
   });
+
+  Task.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        title = map['title'],
+        description = map['description'],
+        flag = map['flag'],
+        dateTime = map['datetime'],
+        category = map['id_category'],
+        isCompleted = map['is_completed'];
 }

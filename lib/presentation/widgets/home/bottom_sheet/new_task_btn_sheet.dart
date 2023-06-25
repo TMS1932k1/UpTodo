@@ -9,9 +9,9 @@ import 'package:todo_app/data/models/category.dart';
 import 'package:todo_app/data/repositories/task_firbase.dart';
 import 'package:todo_app/presentation/widgets/cus_text_field.dart';
 import 'package:todo_app/presentation/widgets/home/bottom_sheet/categories_dialog.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/category_tag.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/datetime_tag.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/flag_tag.dart';
+import 'package:todo_app/presentation/widgets/home/category_tag.dart';
+import 'package:todo_app/presentation/widgets/home/datetime_tag.dart';
+import 'package:todo_app/presentation/widgets/home/flag_tag.dart';
 import 'package:todo_app/presentation/widgets/home/bottom_sheet/flags_dialog.dart';
 
 class NewTaskBtnSheet extends StatefulWidget {

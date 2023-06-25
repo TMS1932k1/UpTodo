@@ -40,9 +40,14 @@ class _FlagsDialogState extends State<FlagsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // Get height/width of device
+    final sizeDevice = MediaQuery.of(context).size;
+    final isTablet = sizeDevice.width > 600;
+
     return Dialog(
       elevation: 0,
       child: Container(
+        width: isTablet ? 370 : double.infinity,
         padding: const EdgeInsets.all(kPaddingSmall),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/presentation/widgets/home/confirm_sign_out_dialog.dart';
 import 'package:todo_app/presentation/widgets/home/index/show_task_list.dart';
 import 'package:todo_app/presentation/widgets/home/sign_out_button.dart';
@@ -52,17 +51,6 @@ class IndexPage extends StatelessWidget {
                 Scaffold.of(context).openDrawer();
               },
             ),
-          const SizedBox(width: kPaddingSmall),
-          IconButton(
-            iconSize: 24,
-            icon: FaIcon(
-              FontAwesomeIcons.filter,
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
-            onPressed: () {
-              // Sort list
-            },
-          ),
         ],
       ),
       actions: [

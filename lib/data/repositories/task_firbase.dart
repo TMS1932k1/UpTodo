@@ -19,6 +19,7 @@ Future<String?> upNewTask({
     if (datetime != null) 'datetime': datetime,
     if (idCategory != null) 'id_category': idCategory,
     if (flag != null) 'flag': flag,
+    'is_completed': false,
   };
   try {
     await FirebaseFirestore.instance.collection(user.uid).add(data);
