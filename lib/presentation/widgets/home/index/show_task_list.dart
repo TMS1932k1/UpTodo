@@ -6,10 +6,14 @@ import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_event.dart';
 import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_state.dart';
 import 'package:todo_app/business_logic/cubits/search/search_cubit.dart';
 import 'package:todo_app/business_logic/cubits/search/search_state.dart';
+import 'package:todo_app/business_logic/cubits/sort/sort_cubit.dart';
+import 'package:todo_app/business_logic/cubits/sort/sort_state.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/task.dart';
+import 'package:todo_app/presentation/screens/task/task_screen.dart';
 import 'package:todo_app/presentation/widgets/home/index/search_input.dart';
+import 'package:todo_app/presentation/widgets/home/index/sort_button.dart';
 import 'package:todo_app/presentation/widgets/home/index/task_grid_item.dart';
 import 'package:todo_app/presentation/widgets/home/index/task_list_item.dart';
 
@@ -58,6 +62,27 @@ class _ShowTaskListState extends State<ShowTaskList> {
             return _buildEmptyScreen(context);
           }
 
+          if (loadState.toDo != null && loadState.toDo!.isNotEmpty) {
+            BlocProvider.of<SortCubit>(context).sortDefault(loadState.toDo!);
+          }
+
+          /// Sort with [index]
+          ///  + 0 / default: Priority
+          ///  + 1: Date
+          ///  + 2: A-Z
+          void sortWithIndex(int index, List<Task> tasks) {
+            switch (index) {
+              case 1:
+                BlocProvider.of<SortCubit>(context).sortDate(tasks);
+                break;
+              case 2:
+                BlocProvider.of<SortCubit>(context).sortAZ(tasks);
+                break;
+              default:
+                BlocProvider.of<SortCubit>(context).sortDefault(tasks);
+            }
+          }
+
           return Container(
             padding: const EdgeInsets.all(kPaddingSmall),
             child: Column(
@@ -82,11 +107,25 @@ class _ShowTaskListState extends State<ShowTaskList> {
                             children: [
                               if (loadState.toDo != null &&
                                   loadState.toDo!.isNotEmpty)
-                                _buildDefaultTaskList(
-                                  context: context,
-                                  isTablet: isTablet,
-                                  tasks: loadState.toDo!,
-                                  title: 'To Do',
+                                BlocBuilder<SortCubit, SortState>(
+                                  builder: (context, sortState) =>
+                                      _buildDefaultTaskList(
+                                    context: context,
+                                    isTablet: isTablet,
+                                    tasks: sortState.sorted,
+                                    title: 'To Do',
+                                    sortButton: SortButton(
+                                      sortOptions: const [
+                                        'Priority',
+                                        'Date',
+                                        'A-Z',
+                                      ],
+                                      onSort: (index) => sortWithIndex(
+                                        index,
+                                        loadState.toDo!,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               if (loadState.completeDo != null &&
                                   loadState.completeDo!.isNotEmpty)
@@ -197,10 +236,11 @@ Widget _buildDefaultTaskList({
   Widget? sortButton,
 }) {
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _buildTitle(context, title),
       const SizedBox(height: kPaddingSmall),
-      if (sortButton != null) const SizedBox(height: kPaddingSmall),
+      if (sortButton != null) sortButton,
       isTablet
           ? MasonryGrid(
               crossAxisSpacing: kPaddingSmall,
@@ -209,6 +249,11 @@ Widget _buildDefaultTaskList({
                   .map(
                     (task) => TaskGridItem(
                       task: task,
+                      onClicked: (task) => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TaskScreen(task: task),
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -219,6 +264,11 @@ Widget _buildDefaultTaskList({
                     (task) => TaskListItem(
                       task: task,
                       isShowCheck: isShowCheck,
+                      onClicked: (task) => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TaskScreen(task: task),
+                        ),
+                      ),
                     ),
                   )
                   .toList(),

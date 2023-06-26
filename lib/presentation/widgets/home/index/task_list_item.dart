@@ -12,63 +12,68 @@ class TaskListItem extends StatelessWidget {
     super.key,
     required this.task,
     this.isShowCheck = false,
+    this.onClicked,
   });
 
   final Task task;
   final bool isShowCheck;
+  final Function(Task)? onClicked;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: Theme.of(context).colorScheme.surface,
-      ),
-      padding: const EdgeInsets.all(kPaddingSmall),
-      margin: const EdgeInsets.symmetric(vertical: kPaddingSmall / 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (isShowCheck)
-                FaIcon(
-                  task.isCompleted
-                      ? FontAwesomeIcons.circleCheck
-                      : FontAwesomeIcons.circleXmark,
-                  color: task.isCompleted ? Colors.green : Colors.red,
-                  size: 14,
+    return GestureDetector(
+      onTap: onClicked != null ? () => onClicked!(task) : null,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        padding: const EdgeInsets.all(kPaddingSmall),
+        margin: const EdgeInsets.symmetric(vertical: kPaddingSmall / 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (isShowCheck)
+                  FaIcon(
+                    task.isCompleted
+                        ? FontAwesomeIcons.circleCheck
+                        : FontAwesomeIcons.circleXmark,
+                    color: task.isCompleted ? Colors.green : Colors.red,
+                    size: 14,
+                  ),
+                if (isShowCheck) const SizedBox(width: 6),
+                Text(
+                  task.title,
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
-              if (isShowCheck) const SizedBox(width: 6),
-              Text(
-                task.title,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-            ],
-          ),
-          const SizedBox(height: kPaddingSmall),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (task.dateTime != null)
-                Expanded(
-                  child: DateTimeTag(
-                    dateTime: DateTime.fromMillisecondsSinceEpoch(
-                      task.dateTime!.millisecondsSinceEpoch,
+              ],
+            ),
+            const SizedBox(height: kPaddingSmall),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (task.dateTime != null)
+                  Expanded(
+                    child: DateTimeTag(
+                      dateTime: DateTime.fromMillisecondsSinceEpoch(
+                        task.dateTime!.millisecondsSinceEpoch,
+                      ),
                     ),
                   ),
+                Row(
+                  children: [
+                    if (task.category != null)
+                      CategoryTag(category: categogies[task.category! - 1]),
+                    if (task.flag != null) const SizedBox(width: kPaddingSmall),
+                    if (task.flag != null) FlagTag(flag: task.flag!),
+                  ],
                 ),
-              Row(
-                children: [
-                  if (task.category != null)
-                    CategoryTag(category: categogies[task.category! - 1]),
-                  if (task.flag != null) const SizedBox(width: kPaddingSmall),
-                  if (task.flag != null) FlagTag(flag: task.flag!),
-                ],
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

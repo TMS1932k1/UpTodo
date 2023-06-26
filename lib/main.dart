@@ -8,6 +8,7 @@ import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/home/add_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/search/search_cubit.dart';
+import 'package:todo_app/business_logic/cubits/sort/sort_cubit.dart';
 import 'package:todo_app/presentation/screens/auth/auth_screen.dart';
 import 'package:todo_app/presentation/screens/home/home_screen.dart';
 import 'package:todo_app/presentation/screens/intro/intro_screen.dart';
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<SearchCubit>(
           create: (context) => SearchCubit(),
+        ),
+        BlocProvider<SortCubit>(
+          create: (context) => SortCubit(),
         ),
       ],
       child: MaterialApp(
