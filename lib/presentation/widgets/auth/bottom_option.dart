@@ -41,7 +41,7 @@ class BottomOption extends StatelessWidget {
           showSnackBarError(context, error);
         }
 
-        // Set state to start loading
+        // Set state to stop loading
         BlocProvider.of<AuthLoadingCubit>(context).stopLoading();
       }
     }

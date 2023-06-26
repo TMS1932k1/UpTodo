@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/home/add_loading_cubit.dart';
+import 'package:todo_app/business_logic/cubits/search/search_cubit.dart';
 import 'package:todo_app/presentation/screens/auth/auth_screen.dart';
 import 'package:todo_app/presentation/screens/home/home_screen.dart';
 import 'package:todo_app/presentation/screens/intro/intro_screen.dart';
@@ -44,7 +46,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<AddLoadingCubit>(
           create: (context) => AddLoadingCubit(),
-        )
+        ),
+        BlocProvider<LoadTaskBloc>(
+          create: (context) => LoadTaskBloc(),
+        ),
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

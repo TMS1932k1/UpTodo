@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_event.dart';
 import 'package:todo_app/business_logic/cubits/home/add_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/home/add_loading_state.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
@@ -102,6 +104,9 @@ class _NewTaskBtnSheetState extends State<NewTaskBtnSheet> {
 
       // Set add loading to stop loading
       BlocProvider.of<AddLoadingCubit>(context).stopLoading();
+
+      // Load list
+      BlocProvider.of<LoadTaskBloc>(context).add(LoadEvent());
     }
   }
 
