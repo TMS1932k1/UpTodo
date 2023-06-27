@@ -3,7 +3,7 @@ import 'package:masonry_grid/masonry_grid.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/data/models/category.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/category_grid_item.dart';
+import 'package:todo_app/presentation/widgets/category_grid_item.dart';
 
 class CategoriesDialog extends StatefulWidget {
   const CategoriesDialog({

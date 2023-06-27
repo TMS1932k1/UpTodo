@@ -3,9 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/task.dart';
-import 'package:todo_app/presentation/widgets/home/category_tag.dart';
-import 'package:todo_app/presentation/widgets/home/datetime_tag.dart';
-import 'package:todo_app/presentation/widgets/home/flag_tag.dart';
+import 'package:todo_app/presentation/widgets/category_tag.dart';
+import 'package:todo_app/presentation/widgets/datetime_tag.dart';
+import 'package:todo_app/presentation/widgets/flag_tag.dart';
 
 class TaskListItem extends StatelessWidget {
   const TaskListItem({

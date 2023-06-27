@@ -1,28 +1,34 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ConfirmSignOutDialog extends StatelessWidget {
-  const ConfirmSignOutDialog({super.key});
+class ConfirmDialog extends StatelessWidget {
+  const ConfirmDialog({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.onConfirm,
+  });
+
+  final String title;
+  final String content;
+  final void Function() onConfirm;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Sign Out',
+        title,
         style: Theme.of(context).textTheme.labelSmall!.copyWith(
               color: Theme.of(context).colorScheme.primary,
             ),
       ),
       content: Text(
-        'Please confirm to sign out current user',
+        content,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       actions: [
         TextButton(
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-            if (context.mounted) Navigator.of(context).pop();
-          },
+          onPressed: onConfirm,
           child: Text(
             'Confirm',
             style: Theme.of(context).textTheme.labelSmall!.copyWith(

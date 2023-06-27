@@ -13,8 +13,9 @@ Future<String?> upNewTask({
   int? idCategory,
   int? flag,
 }) async {
+  final id = const Uuid().v4();
   Map<String, dynamic> data = {
-    'id': const Uuid().v4(),
+    'id': id,
     'title': title,
     if (description != null) 'description': description,
     if (datetime != null) 'datetime': datetime,
@@ -23,7 +24,12 @@ Future<String?> upNewTask({
     'is_completed': false,
   };
   try {
-    await FirebaseFirestore.instance.collection(user.uid).add(data);
+    await FirebaseFirestore.instance
+        .collection(user.uid)
+        .doc('tasks')
+        .collection('tasks')
+        .doc(id)
+        .set(data);
   } catch (e) {
     return 'Error in adding task to Firebase';
   }
@@ -37,7 +43,11 @@ Future<List<Task>?> loadAllTasks({
 }) async {
   final List<Task> tasks = [];
   try {
-    final data = await FirebaseFirestore.instance.collection(user.uid).get();
+    final data = await FirebaseFirestore.instance
+        .collection(user.uid)
+        .doc('tasks')
+        .collection('tasks')
+        .get();
 
     if (data.size <= 0) return tasks;
 
@@ -47,5 +57,24 @@ Future<List<Task>?> loadAllTasks({
     return tasks;
   } catch (e) {
     return null;
+  }
+}
+
+/// Delete task with task's id
+/// If have error will return error's message
+Future<String?> delTask({
+  required User user,
+  required String id,
+}) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection(user.uid)
+        .doc('tasks')
+        .collection('tasks')
+        .doc(id)
+        .delete();
+    return null;
+  } catch (e) {
+    return 'Error in deleting task';
   }
 }

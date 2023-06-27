@@ -1,19 +1,173 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/business_logic/blocs/del_task/del_task_bloc.dart';
+import 'package:todo_app/business_logic/blocs/del_task/del_task_event.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/task.dart';
-import 'package:todo_app/presentation/widgets/home/category_tag.dart';
-import 'package:todo_app/presentation/widgets/home/datetime_tag.dart';
-import 'package:todo_app/presentation/widgets/home/flag_tag.dart';
+import 'package:todo_app/presentation/widgets/categories_dialog.dart';
+import 'package:todo_app/presentation/widgets/confirm_dialog.dart';
+import 'package:todo_app/presentation/widgets/category_tag.dart';
+import 'package:todo_app/presentation/widgets/datetime_tag.dart';
+import 'package:todo_app/presentation/widgets/flag_tag.dart';
+import 'package:todo_app/presentation/widgets/flags_dialog.dart';
 
-class DetailTask extends StatelessWidget {
+class DetailTask extends StatefulWidget {
   const DetailTask({
     super.key,
     required this.task,
   });
 
   final Task task;
+
+  @override
+  State<DetailTask> createState() => _DetailTaskState();
+}
+
+class _DetailTaskState extends State<DetailTask> {
+  String tempTitle = '';
+  String? tempDecription;
+  Timestamp? tempDateTime;
+  int? tempIdCategory;
+  int? tempFlag;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Assign temp value with task
+    tempTitle = widget.task.title;
+    tempDecription = widget.task.description;
+    tempDateTime = widget.task.dateTime;
+    tempIdCategory = widget.task.category;
+    tempFlag = widget.task.flag;
+  }
+
+  /// Compare task's details with temp's values
+  bool isChanged() {
+    return (tempTitle != widget.task.title) ||
+        (tempDecription != widget.task.description) ||
+        (tempDateTime != widget.task.dateTime) ||
+        (tempIdCategory != widget.task.category) ||
+        (tempFlag != widget.task.flag);
+  }
+
+  /// Show dialog confirm to delete task with [id]
+  void delTask(String id) async {
+    await showDialog(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        title: 'Confirm Delete Task',
+        content: 'Are you sure about deleting this task?',
+        onConfirm: () async {
+          BlocProvider.of<DelTaskBloc>(context).add(
+            DelEvent(
+              user: FirebaseAuth.instance.currentUser!,
+              id: id,
+            ),
+          );
+          // Pop dialog
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  /// Show dialog choose priority flag [tempFlag]
+  void showFlagDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => FlagsDialog(
+        onSaved: (flag) {
+          setState(() {
+            tempFlag = flag;
+          });
+          Navigator.of(context).pop();
+        },
+        flag: tempFlag,
+      ),
+    );
+  }
+
+  /// Set [_datetime] with [date] and [time] to add task's datetime
+  void showAddDateTimePicker() async {
+    // Set date
+    DateTime? convert = tempDateTime != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+            tempDateTime!.millisecondsSinceEpoch)
+        : null;
+    DateTime? date = convert;
+    date = await showDatePicker(
+      context: context,
+      initialDate: date ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (date == null) return;
+
+    // Set time
+    TimeOfDay? time = convert != null ? TimeOfDay.fromDateTime(convert) : null;
+    time = await showTimePicker(
+      context: context,
+      initialTime: time ?? TimeOfDay.now(),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (time == null) return;
+
+    // Set datetime
+    setState(() {
+      tempDateTime = Timestamp.fromDate(
+        DateTime(
+          date!.year,
+          date.month,
+          date.day,
+          time!.hour,
+          time.minute,
+        ),
+      );
+    });
+  }
+
+  /// Show dialog choose category [tempIdCategory]
+  void showCategoryDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => CategoriesDialog(
+        selectCategory: (category) {
+          setState(() {
+            tempIdCategory = category?.id;
+          });
+          Navigator.of(context).pop();
+        },
+        category:
+            tempIdCategory != null ? categogies[tempIdCategory! - 1] : null,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +187,13 @@ class DetailTask extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        task.title,
+                        tempTitle,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(height: kPaddingSmall),
-                      if (task.description != null)
+                      if (tempDecription != null)
                         Text(
-                          task.description!,
+                          tempDecription!,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -84,11 +238,9 @@ class DetailTask extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (task.dateTime != null)
+                if (tempDateTime != null)
                   GestureDetector(
-                    onTap: () {
-                      // Edit task's date
-                    },
+                    onTap: showAddDateTimePicker,
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
@@ -99,16 +251,14 @@ class DetailTask extends StatelessWidget {
                       ),
                       child: DateTimeTag(
                         dateTime: DateTime.fromMillisecondsSinceEpoch(
-                          task.dateTime!.millisecondsSinceEpoch,
+                          tempDateTime!.millisecondsSinceEpoch,
                         ),
                       ),
                     ),
                   ),
-                if (task.dateTime == null)
+                if (tempDateTime == null)
                   ElevatedButton(
-                    onPressed: () {
-                      // Edit task's date
-                    },
+                    onPressed: showAddDateTimePicker,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surface,
                     ),
@@ -134,23 +284,19 @@ class DetailTask extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (task.category != null)
+                if (tempIdCategory != null)
                   GestureDetector(
                     onTap: () {
                       // Edit task's date
                     },
                     child: CategoryTag(
-                      category: categogies[task.category! - 1],
-                      onClick: () {
-                        // Edit task's category
-                      },
+                      category: categogies[tempIdCategory! - 1],
+                      onClick: showCategoryDialog,
                     ),
                   ),
-                if (task.category == null)
+                if (tempIdCategory == null)
                   ElevatedButton(
-                    onPressed: () {
-                      // Edit task's category
-                    },
+                    onPressed: showCategoryDialog,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surface,
                     ),
@@ -176,20 +322,16 @@ class DetailTask extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (task.flag != null)
+                if (tempFlag != null)
                   GestureDetector(
-                    onTap: () {
-                      // Edit task's flag
-                    },
+                    onTap: showFlagDialog,
                     child: FlagTag(
-                      flag: task.flag!,
+                      flag: tempFlag!,
                     ),
                   ),
-                if (task.flag == null)
+                if (tempFlag == null)
                   ElevatedButton(
-                    onPressed: () {
-                      // Edit task's flag
-                    },
+                    onPressed: showFlagDialog,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surface,
                     ),
@@ -207,9 +349,7 @@ class DetailTask extends StatelessWidget {
                 ),
                 const SizedBox(width: kPaddingSmall),
                 TextButton(
-                  onPressed: () {
-                    // Delete task
-                  },
+                  onPressed: () => delTask(widget.task.id),
                   child: Text(
                     'Delete Task',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(

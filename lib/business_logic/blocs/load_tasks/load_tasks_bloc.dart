@@ -6,7 +6,7 @@ import 'package:todo_app/data/models/task.dart';
 import 'package:todo_app/data/repositories/task_firbase.dart';
 
 class LoadTaskBloc extends Bloc<LoadTasksEvent, LoadTasksState> {
-  LoadTaskBloc() : super(LoadingState()) {
+  LoadTaskBloc() : super(LoadedState()) {
     on<LoadEvent>((event, emit) async {
       emit(LoadingState());
       final tasks = await loadAllTasks(

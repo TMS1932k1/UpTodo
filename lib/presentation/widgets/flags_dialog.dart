@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masonry_grid/masonry_grid.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/flag_grid_item.dart';
+import 'package:todo_app/presentation/widgets/flag_grid_item.dart';
 
 class FlagsDialog extends StatefulWidget {
   const FlagsDialog({

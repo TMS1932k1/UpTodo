@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:todo_app/presentation/widgets/home/confirm_sign_out_dialog.dart';
+import 'package:todo_app/presentation/widgets/confirm_dialog.dart';
 import 'package:todo_app/presentation/widgets/home/index/show_task_list.dart';
-import 'package:todo_app/presentation/widgets/home/sign_out_button.dart';
+import 'package:todo_app/presentation/widgets/home/index/sign_out_button.dart';
 
 class IndexPage extends StatelessWidget {
   const IndexPage({super.key});
@@ -12,7 +12,14 @@ class IndexPage extends StatelessWidget {
   void _signOut(BuildContext context) async {
     await showDialog(
       context: context,
-      builder: (context) => const ConfirmSignOutDialog(),
+      builder: (context) => ConfirmDialog(
+        title: 'Sign Out',
+        content: 'Please confirm to sign out current user',
+        onConfirm: () async {
+          await FirebaseAuth.instance.signOut();
+          if (context.mounted) Navigator.of(context).pop();
+        },
+      ),
     );
   }
 

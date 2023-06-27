@@ -10,11 +10,11 @@ import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/category.dart';
 import 'package:todo_app/data/repositories/task_firbase.dart';
 import 'package:todo_app/presentation/widgets/cus_text_field.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/categories_dialog.dart';
-import 'package:todo_app/presentation/widgets/home/category_tag.dart';
-import 'package:todo_app/presentation/widgets/home/datetime_tag.dart';
-import 'package:todo_app/presentation/widgets/home/flag_tag.dart';
-import 'package:todo_app/presentation/widgets/home/bottom_sheet/flags_dialog.dart';
+import 'package:todo_app/presentation/widgets/categories_dialog.dart';
+import 'package:todo_app/presentation/widgets/category_tag.dart';
+import 'package:todo_app/presentation/widgets/datetime_tag.dart';
+import 'package:todo_app/presentation/widgets/flag_tag.dart';
+import 'package:todo_app/presentation/widgets/flags_dialog.dart';
 
 class NewTaskBtnSheet extends StatefulWidget {
   const NewTaskBtnSheet({super.key});
