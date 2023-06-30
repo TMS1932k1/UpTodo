@@ -78,3 +78,42 @@ Future<String?> delTask({
     return 'Error in deleting task';
   }
 }
+
+/// Edit complte task with task's id
+/// If have error will return error's message
+Future<String?> completeTask({
+  required User user,
+  required String id,
+}) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection(user.uid)
+        .doc('tasks')
+        .collection('tasks')
+        .doc(id)
+        .update({'is_completed': true});
+    return null;
+  } catch (e) {
+    return 'Error in editting task';
+  }
+}
+
+/// Edit task's detail with task's id
+/// If have error will return error's message
+Future<String?> editTask({
+  required User user,
+  required String id,
+  required Map<String, dynamic> changes,
+}) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection(user.uid)
+        .doc('tasks')
+        .collection('tasks')
+        .doc(id)
+        .update(changes);
+    return null;
+  } catch (e) {
+    return 'Error in editting task';
+  }
+}

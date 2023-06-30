@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/business_logic/blocs/del_task/del_task_bloc.dart';
+import 'package:todo_app/business_logic/blocs/edit_task/edit_task_bloc.dart';
 import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
 import 'package:todo_app/business_logic/cubits/auth/auth_loading_cubit.dart';
 import 'package:todo_app/business_logic/cubits/home/add_loading_cubit.dart';
@@ -58,8 +58,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<SortCubit>(
           create: (context) => SortCubit(),
         ),
-        BlocProvider<DelTaskBloc>(
-          create: (context) => DelTaskBloc(),
+        BlocProvider<EditTaskBloc>(
+          create: (context) => EditTaskBloc(),
         ),
       ],
       child: MaterialApp(

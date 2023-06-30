@@ -82,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        resizeToAvoidBottomInset: false,
         floatingActionButtonLocation:
             !isTablet ? FloatingActionButtonLocation.miniCenterDocked : null,
         bottomNavigationBar: !isTablet

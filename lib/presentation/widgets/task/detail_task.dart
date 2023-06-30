@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:todo_app/business_logic/blocs/del_task/del_task_bloc.dart';
-import 'package:todo_app/business_logic/blocs/del_task/del_task_event.dart';
+import 'package:todo_app/business_logic/blocs/edit_task/edit_task_bloc.dart';
+import 'package:todo_app/business_logic/blocs/edit_task/edit_task_event.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/task.dart';
@@ -14,14 +14,17 @@ import 'package:todo_app/presentation/widgets/category_tag.dart';
 import 'package:todo_app/presentation/widgets/datetime_tag.dart';
 import 'package:todo_app/presentation/widgets/flag_tag.dart';
 import 'package:todo_app/presentation/widgets/flags_dialog.dart';
+import 'package:todo_app/presentation/widgets/task/edit_title_description_dialog.dart';
 
 class DetailTask extends StatefulWidget {
   const DetailTask({
     super.key,
     required this.task,
+    required this.setChanged,
   });
 
   final Task task;
+  final void Function(Map<String, dynamic>?) setChanged;
 
   @override
   State<DetailTask> createState() => _DetailTaskState();
@@ -47,12 +50,26 @@ class _DetailTaskState extends State<DetailTask> {
   }
 
   /// Compare task's details with temp's values
-  bool isChanged() {
-    return (tempTitle != widget.task.title) ||
-        (tempDecription != widget.task.description) ||
-        (tempDateTime != widget.task.dateTime) ||
-        (tempIdCategory != widget.task.category) ||
-        (tempFlag != widget.task.flag);
+  bool isChanged() =>
+      (tempTitle != widget.task.title) ||
+      (tempDecription != widget.task.description) ||
+      (tempDateTime != widget.task.dateTime) ||
+      (tempIdCategory != widget.task.category) ||
+      (tempFlag != widget.task.flag);
+
+  /// Emit ChangedEvent to available save button
+  void updateAvailableSaveButton() {
+    if (isChanged()) {
+      widget.setChanged({
+        'title': tempTitle,
+        'description': tempDecription,
+        'datetime': tempDateTime,
+        'flag': tempFlag,
+        'id_category': tempIdCategory,
+      });
+    } else {
+      widget.setChanged(null);
+    }
   }
 
   /// Show dialog confirm to delete task with [id]
@@ -63,7 +80,7 @@ class _DetailTaskState extends State<DetailTask> {
         title: 'Confirm Delete Task',
         content: 'Are you sure about deleting this task?',
         onConfirm: () async {
-          BlocProvider.of<DelTaskBloc>(context).add(
+          BlocProvider.of<EditTaskBloc>(context).add(
             DelEvent(
               user: FirebaseAuth.instance.currentUser!,
               id: id,
@@ -86,6 +103,7 @@ class _DetailTaskState extends State<DetailTask> {
             tempFlag = flag;
           });
           Navigator.of(context).pop();
+          updateAvailableSaveButton();
         },
         flag: tempFlag,
       ),
@@ -150,6 +168,7 @@ class _DetailTaskState extends State<DetailTask> {
         ),
       );
     });
+    updateAvailableSaveButton();
   }
 
   /// Show dialog choose category [tempIdCategory]
@@ -162,9 +181,29 @@ class _DetailTaskState extends State<DetailTask> {
             tempIdCategory = category?.id;
           });
           Navigator.of(context).pop();
+          updateAvailableSaveButton();
         },
         category:
             tempIdCategory != null ? categogies[tempIdCategory! - 1] : null,
+      ),
+    );
+  }
+
+  /// Show dialog edit [tempTitle] or [tempDecription]
+  void showTitleDesciptionDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => EditTitleDescriptionDialog(
+        title: tempTitle,
+        decription: tempDecription,
+        popReturn: (title, description) {
+          setState(() {
+            tempTitle = title;
+            tempDecription = description;
+          });
+          Navigator.of(context).pop();
+          updateAvailableSaveButton();
+        },
       ),
     );
   }
@@ -209,11 +248,9 @@ class _DetailTaskState extends State<DetailTask> {
                   child: Container(
                     alignment: Alignment.topRight,
                     child: IconButton(
-                        onPressed: () {
-                          // Edit title and decription
-                        },
+                        onPressed: showTitleDesciptionDialog,
                         icon: const FaIcon(
-                          FontAwesomeIcons.edit,
+                          FontAwesomeIcons.penToSquare,
                           size: 20,
                         )),
                   ),
@@ -285,14 +322,9 @@ class _DetailTaskState extends State<DetailTask> {
                   ],
                 ),
                 if (tempIdCategory != null)
-                  GestureDetector(
-                    onTap: () {
-                      // Edit task's date
-                    },
-                    child: CategoryTag(
-                      category: categogies[tempIdCategory! - 1],
-                      onClick: showCategoryDialog,
-                    ),
+                  CategoryTag(
+                    category: categogies[tempIdCategory! - 1],
+                    onClick: showCategoryDialog,
                   ),
                 if (tempIdCategory == null)
                   ElevatedButton(
@@ -323,11 +355,9 @@ class _DetailTaskState extends State<DetailTask> {
                   ],
                 ),
                 if (tempFlag != null)
-                  GestureDetector(
-                    onTap: showFlagDialog,
-                    child: FlagTag(
-                      flag: tempFlag!,
-                    ),
+                  FlagTag(
+                    flag: tempFlag!,
+                    onClick: showFlagDialog,
                   ),
                 if (tempFlag == null)
                   ElevatedButton(

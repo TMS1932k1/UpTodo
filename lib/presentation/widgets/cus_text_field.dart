@@ -11,6 +11,7 @@ class CusTextField extends StatelessWidget {
     required this.isObscure,
     this.onSaved,
     this.maxLength,
+    this.text,
   });
 
   final TextEditingController? controller;
@@ -20,6 +21,7 @@ class CusTextField extends StatelessWidget {
   final Function(String?)? onSaved;
   final bool isObscure;
   final int? maxLength;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class CusTextField extends StatelessWidget {
           horizontal: kPaddingSmall,
         ),
       ),
+      initialValue: text,
       validator: validator,
       obscureText: isObscure,
       onSaved: onSaved,
