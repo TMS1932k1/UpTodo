@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masonry_grid/masonry_grid.dart';
 import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
-import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_event.dart';
 import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_state.dart';
 import 'package:todo_app/business_logic/cubits/search/search_cubit.dart';
 import 'package:todo_app/business_logic/cubits/search/search_state.dart';
@@ -25,164 +24,137 @@ class ShowTaskList extends StatefulWidget {
 }
 
 class _ShowTaskListState extends State<ShowTaskList> {
-  void _showSnackBarError(String mes) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mes),
-        duration: const Duration(milliseconds: 2000),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<LoadTaskBloc>(context).add(LoadEvent());
-
     // Get height/width of device
     final sizeDevice = MediaQuery.of(context).size;
     final isTablet = sizeDevice.width > 600;
+    final loadState = BlocProvider.of<LoadTaskBloc>(context).state;
 
-    return BlocListener<LoadTaskBloc, LoadTasksState>(
-      listener: (context, state) {
-        if (state is ErrorState) _showSnackBarError('Error in loading tasks');
-      },
-      child: BlocBuilder<LoadTaskBloc, LoadTasksState>(
-        builder: (context, loadState) {
-          if (loadState is LoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    if (loadState is ErrorState ||
+        loadState.tasks == null ||
+        loadState.tasks!.isEmpty) {
+      return _buildEmptyScreen(context);
+    }
 
-          if (loadState is ErrorState) {
-            return _buildEmptyScreen(context);
-          }
+    if (loadState.toDo != null && loadState.toDo!.isNotEmpty) {
+      BlocProvider.of<SortCubit>(context).sortDefault(loadState.toDo!);
+    }
 
-          if (loadState.tasks == null || loadState.tasks!.isEmpty) {
-            return _buildEmptyScreen(context);
-          }
+    /// Sort with [index]
+    ///  + 0 / default: Priority
+    ///  + 1: Date
+    ///  + 2: A-Z
+    void sortWithIndex(int index, List<Task> tasks) {
+      switch (index) {
+        case 1:
+          BlocProvider.of<SortCubit>(context).sortDate(tasks);
+          break;
+        case 2:
+          BlocProvider.of<SortCubit>(context).sortAZ(tasks);
+          break;
+        default:
+          BlocProvider.of<SortCubit>(context).sortDefault(tasks);
+      }
+    }
 
-          if (loadState.toDo != null && loadState.toDo!.isNotEmpty) {
-            BlocProvider.of<SortCubit>(context).sortDefault(loadState.toDo!);
-          }
-
-          /// Sort with [index]
-          ///  + 0 / default: Priority
-          ///  + 1: Date
-          ///  + 2: A-Z
-          void sortWithIndex(int index, List<Task> tasks) {
-            switch (index) {
-              case 1:
-                BlocProvider.of<SortCubit>(context).sortDate(tasks);
-                break;
-              case 2:
-                BlocProvider.of<SortCubit>(context).sortAZ(tasks);
-                break;
-              default:
-                BlocProvider.of<SortCubit>(context).sortDefault(tasks);
-            }
-          }
-
-          return Container(
-            padding: const EdgeInsets.all(kPaddingSmall),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SearchInput(
-                  onSearch: (title) {
-                    // Search tasks with name
-                    BlocProvider.of<SearchCubit>(context).searchWithTitle(
-                      title,
-                      loadState.tasks!,
-                    );
-                  },
-                ),
-                const SizedBox(height: kPaddingMedium),
-                BlocBuilder<SearchCubit, SearchState>(
-                  builder: (context, searchState) {
-                    if (searchState.searchs == null) {
-                      return Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              if (loadState.toDo != null &&
-                                  loadState.toDo!.isNotEmpty)
-                                BlocBuilder<SortCubit, SortState>(
-                                  builder: (context, sortState) =>
-                                      _buildDefaultTaskList(
-                                    context: context,
-                                    isTablet: isTablet,
-                                    tasks: sortState.sorted,
-                                    title: 'To Do',
-                                    sortButton: SortButton(
-                                      sortOptions: const [
-                                        'Priority',
-                                        'Date',
-                                        'A-Z',
-                                      ],
-                                      onSort: (index) => sortWithIndex(
-                                        index,
-                                        loadState.toDo!,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (loadState.completeDo != null &&
-                                  loadState.completeDo!.isNotEmpty)
-                                const SizedBox(height: kPaddingMedium),
-                              if (loadState.completeDo != null &&
-                                  loadState.completeDo!.isNotEmpty)
+    return Container(
+      padding: const EdgeInsets.all(kPaddingSmall),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SearchInput(
+            onSearch: (title) {
+              // Search tasks with name
+              BlocProvider.of<SearchCubit>(context).searchWithTitle(
+                title,
+                loadState.tasks!,
+              );
+            },
+          ),
+          const SizedBox(height: kPaddingMedium),
+          BlocBuilder<SearchCubit, SearchState>(
+            builder: (context, searchState) {
+              if (searchState.searchs == null) {
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        if (loadState.toDo != null &&
+                            loadState.toDo!.isNotEmpty)
+                          BlocBuilder<SortCubit, SortState>(
+                            builder: (context, sortState) =>
                                 _buildDefaultTaskList(
-                                  context: context,
-                                  isTablet: isTablet,
-                                  tasks: loadState.completeDo!,
-                                  title: 'Completed Tasks',
-                                  isShowCheck: true,
+                              context: context,
+                              isTablet: isTablet,
+                              tasks: sortState.sorted,
+                              title: 'To Do',
+                              sortButton: SortButton(
+                                sortOptions: const [
+                                  'Priority',
+                                  'Date',
+                                  'A-Z',
+                                ],
+                                onSort: (index) => sortWithIndex(
+                                  index,
+                                  loadState.toDo!,
                                 ),
-                              if (loadState.missDo != null &&
-                                  loadState.missDo!.isNotEmpty)
-                                const SizedBox(height: kPaddingMedium),
-                              if (loadState.missDo != null &&
-                                  loadState.missDo!.isNotEmpty)
-                                _buildDefaultTaskList(
-                                  context: context,
-                                  isTablet: isTablet,
-                                  tasks: loadState.missDo!,
-                                  title: 'Miss Tasks',
-                                  isShowCheck: true,
-                                ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (searchState.searchs!.isEmpty) {
-                      return const Expanded(
-                        child: Center(
-                          child: Text('Not have task with this title'),
-                        ),
-                      );
-                    } else {
-                      return Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              _buildDefaultTaskList(
-                                context: context,
-                                isTablet: isTablet,
-                                tasks: searchState.searchs!,
-                                title: 'Results',
                               ),
-                            ],
+                            ),
                           ),
+                        if (loadState.completeDo != null &&
+                            loadState.completeDo!.isNotEmpty)
+                          const SizedBox(height: kPaddingMedium),
+                        if (loadState.completeDo != null &&
+                            loadState.completeDo!.isNotEmpty)
+                          _buildDefaultTaskList(
+                            context: context,
+                            isTablet: isTablet,
+                            tasks: loadState.completeDo!,
+                            title: 'Completed Tasks',
+                            isShowCheck: true,
+                          ),
+                        if (loadState.missDo != null &&
+                            loadState.missDo!.isNotEmpty)
+                          const SizedBox(height: kPaddingMedium),
+                        if (loadState.missDo != null &&
+                            loadState.missDo!.isNotEmpty)
+                          _buildDefaultTaskList(
+                            context: context,
+                            isTablet: isTablet,
+                            tasks: loadState.missDo!,
+                            title: 'Miss Tasks',
+                            isShowCheck: true,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              } else if (searchState.searchs!.isEmpty) {
+                return const Expanded(
+                  child: Center(
+                    child: Text('Not have task with this title'),
+                  ),
+                );
+              } else {
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildDefaultTaskList(
+                          context: context,
+                          isTablet: isTablet,
+                          tasks: searchState.searchs!,
+                          title: 'Results',
                         ),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          );
-        },
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -249,6 +221,7 @@ Widget _buildDefaultTaskList({
                   .map(
                     (task) => TaskGridItem(
                       task: task,
+                      isShowCheck: isShowCheck,
                       onClicked: (task) => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TaskScreen(task: task),

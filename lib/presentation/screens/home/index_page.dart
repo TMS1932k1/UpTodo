@@ -42,12 +42,8 @@ class IndexPage extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyLarge,
       ),
       centerTitle: true,
-      leadingWidth: 110,
-      leading: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          if (Scaffold.of(context).hasDrawer)
-            IconButton(
+      leading: Scaffold.of(context).hasDrawer
+          ? IconButton(
               iconSize: 24,
               icon: FaIcon(
                 FontAwesomeIcons.bars,
@@ -57,9 +53,8 @@ class IndexPage extends StatelessWidget {
                 // Open Drawer
                 Scaffold.of(context).openDrawer();
               },
-            ),
-        ],
-      ),
+            )
+          : null,
       actions: [
         SignOutButton(
           firstCharName: FirebaseAuth.instance.currentUser!.email![0],

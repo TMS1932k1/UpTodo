@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_bloc.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_event.dart';
+import 'package:todo_app/business_logic/blocs/load_tasks/load_tasks_state.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/presentation/widgets/home/bottom_sheet/new_task_btn_sheet.dart';
 import 'package:todo_app/presentation/widgets/home/home_btn_nav_bar.dart';
@@ -15,12 +19,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var currentIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<LoadTaskBloc>(context).add(LoadEvent());
+  }
+
   /// Set [currentIndex] by [newIndex]
   /// Update Scaffold's body depend on [homePage] and [currentIndex]
   void setNewIndex(int newIndex) {
     setState(() {
       currentIndex = newIndex;
     });
+  }
+
+  void _showSnackBarError(String mes) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mes),
+        duration: const Duration(milliseconds: 2000),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   /// Show bottom sheet to add new task
@@ -60,7 +81,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: homePages[currentIndex]['page'],
+        body: BlocListener<LoadTaskBloc, LoadTasksState>(
+          listener: (context, state) {
+            if (state is ErrorState) {
+              _showSnackBarError('Error in loading tasks');
+            }
+          },
+          child: BlocBuilder<LoadTaskBloc, LoadTasksState>(
+            builder: (context, loadState) {
+              if (loadState is LoadingState) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return homePages[currentIndex]['page'];
+            },
+          ),
+        ),
         drawer: isTablet
             ? HomeDrawer(
                 width: sizeDevice.width / 3,

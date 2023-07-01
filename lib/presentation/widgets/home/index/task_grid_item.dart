@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/constants/app_constant.dart';
 import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/data/models/task.dart';
@@ -11,15 +12,17 @@ class TaskGridItem extends StatelessWidget {
     super.key,
     required this.task,
     this.onClicked,
+    this.isShowCheck = false,
   });
 
   final Task task;
+  final bool isShowCheck;
   final Function(Task)? onClicked;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClicked != null ? onClicked!(task) : null,
+      onTap: onClicked != null ? () => onClicked!(task) : null,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
@@ -30,11 +33,24 @@ class TaskGridItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              task.title,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
+            Row(
+              children: [
+                if (isShowCheck)
+                  FaIcon(
+                    task.isCompleted
+                        ? FontAwesomeIcons.circleCheck
+                        : FontAwesomeIcons.circleXmark,
+                    color: task.isCompleted ? Colors.green : Colors.red,
+                    size: 14,
                   ),
+                if (isShowCheck) const SizedBox(width: 6),
+                Text(
+                  task.title,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
             ),
             if (task.category != null || task.flag != null)
               const SizedBox(height: kPaddingSmall),

@@ -81,68 +81,70 @@ class _TaskScreenState extends State<TaskScreen> {
         builder: (context, state) {
           return Stack(
             children: [
-              Scaffold(
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Theme.of(context).colorScheme.background,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  actions: [
-                    IconButton(
-                      onPressed: changes != null
-                          ? () => editedTask(widget.task)
-                          : null,
-                      icon: FaIcon(
-                        FontAwesomeIcons.floppyDisk,
-                        size: 24,
-                        color: changes != null
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-                body: Container(
-                  padding: const EdgeInsets.all(kPaddingSmall),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: DetailTask(
-                          task: widget.task,
-                          setChanged: (map) {
-                            setState(() {
-                              changes = map;
-                            });
-                          },
+              SafeArea(
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    actions: [
+                      IconButton(
+                        onPressed: changes != null
+                            ? () => editedTask(widget.task)
+                            : null,
+                        icon: FaIcon(
+                          FontAwesomeIcons.floppyDisk,
+                          size: 24,
+                          color: changes != null
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.grey,
                         ),
                       ),
-                      if (widget.task.isCompleted)
-                        const FaIcon(
-                          FontAwesomeIcons.check,
-                          color: Colors.green,
-                        ),
-                      if (!widget.task.isCompleted)
-                        SizedBox(
-                          width: 327,
-                          child: ElevatedButton(
-                            onPressed: () => completeTask(widget.task),
-                            style: Theme.of(context)
-                                .elevatedButtonTheme
-                                .style!
-                                .copyWith(
-                                  backgroundColor:
-                                      const MaterialStatePropertyAll(
-                                          Colors.green),
-                                ),
-                            child: Text(
-                              'Completed Task',
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
+                    ],
+                  ),
+                  body: Container(
+                    padding: const EdgeInsets.all(kPaddingSmall),
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: DetailTask(
+                            task: widget.task,
+                            setChanged: (map) {
+                              setState(() {
+                                changes = map;
+                              });
+                            },
                           ),
                         ),
-                    ],
+                        if (widget.task.isCompleted)
+                          const FaIcon(
+                            FontAwesomeIcons.check,
+                            color: Colors.green,
+                          ),
+                        if (!widget.task.isCompleted)
+                          SizedBox(
+                            width: 327,
+                            child: ElevatedButton(
+                              onPressed: () => completeTask(widget.task),
+                              style: Theme.of(context)
+                                  .elevatedButtonTheme
+                                  .style!
+                                  .copyWith(
+                                    backgroundColor:
+                                        const MaterialStatePropertyAll(
+                                            Colors.green),
+                                  ),
+                              child: Text(
+                                'Completed Task',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

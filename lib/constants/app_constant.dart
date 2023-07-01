@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/data/models/category.dart';
+import 'package:todo_app/presentation/screens/home/calender_page.dart';
 import 'package:todo_app/presentation/screens/home/index_page.dart';
 
 const logoImage = 'assets/images/logo.png';
@@ -25,7 +26,7 @@ final List<Map<String, dynamic>> homePages = [
   },
   {
     'name': 'Calendar',
-    'page': const Scaffold(),
+    'page': const CalendarPage(),
     'icon': calendarImage,
     'active': calendarBoldImage,
   },
