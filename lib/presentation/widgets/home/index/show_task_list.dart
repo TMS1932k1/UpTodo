@@ -13,8 +13,8 @@ import 'package:todo_app/data/models/task.dart';
 import 'package:todo_app/presentation/screens/task/task_screen.dart';
 import 'package:todo_app/presentation/widgets/home/index/search_input.dart';
 import 'package:todo_app/presentation/widgets/home/index/sort_button.dart';
-import 'package:todo_app/presentation/widgets/home/index/task_grid_item.dart';
-import 'package:todo_app/presentation/widgets/home/index/task_list_item.dart';
+import 'package:todo_app/presentation/widgets/home/task_grid_item.dart';
+import 'package:todo_app/presentation/widgets/home/task_list_item.dart';
 
 class ShowTaskList extends StatefulWidget {
   const ShowTaskList({super.key});
@@ -29,6 +29,7 @@ class _ShowTaskListState extends State<ShowTaskList> {
     // Get height/width of device
     final sizeDevice = MediaQuery.of(context).size;
     final isTablet = sizeDevice.width > 600;
+
     final loadState = BlocProvider.of<LoadTaskBloc>(context).state;
 
     if (loadState is ErrorState ||

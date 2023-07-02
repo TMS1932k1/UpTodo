@@ -5,7 +5,12 @@ import 'package:todo_app/constants/dimen_constant.dart';
 import 'package:todo_app/presentation/widgets/home/calendar/day_item.dart';
 
 class CalendarBar extends StatefulWidget {
-  const CalendarBar({super.key});
+  const CalendarBar({
+    super.key,
+    this.setDate,
+  });
+
+  final Function(DateTime date)? setDate;
 
   @override
   State<CalendarBar> createState() => _CalendarBarState();
@@ -16,8 +21,13 @@ class _CalendarBarState extends State<CalendarBar> {
 
   @override
   Widget build(BuildContext context) {
+    // Get height/width of device
+    final sizeDevice = MediaQuery.of(context).size;
+    final isTablet = sizeDevice.width > 600;
+
     return Container(
       height: 107,
+      width: isTablet ? sizeDevice.width * 2 / 3 : double.infinity,
       color: Theme.of(context).colorScheme.surface,
       child: Column(
         children: [
@@ -29,7 +39,13 @@ class _CalendarBarState extends State<CalendarBar> {
               children: [
                 IconButton(
                   onPressed: () {
-                    // Set tomorow
+                    // Set next week
+                    setState(() {
+                      date = date.subtract(Duration(days: date.weekday));
+                      if (widget.setDate != null) {
+                        widget.setDate!(date);
+                      }
+                    });
                   },
                   icon: FaIcon(
                     FontAwesomeIcons.chevronLeft,
@@ -38,25 +54,44 @@ class _CalendarBarState extends State<CalendarBar> {
                   ),
                 ),
                 Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        DateFormat('MMMM').format(date),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        DateFormat('yyyy').format(date),
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                      ),
-                    ],
+                  child: GestureDetector(
+                    onTap: widget.setDate != null
+                        ? () {
+                            setState(() {
+                              date = DateTime.now();
+                              widget.setDate!(date);
+                            });
+                          }
+                        : null,
+                    child: Column(
+                      children: [
+                        Text(
+                          DateFormat('MMMM').format(date),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          DateFormat('yyyy').format(date),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 IconButton(
                   onPressed: () {
-                    // Set yeterday
+                    // Set last week
+                    setState(() {
+                      date = date.add(Duration(days: 7 - date.weekday + 1));
+                      if (widget.setDate != null) {
+                        widget.setDate!(date);
+                      }
+                    });
                   },
                   icon: FaIcon(
                     FontAwesomeIcons.chevronRight,
@@ -85,6 +120,9 @@ class _CalendarBarState extends State<CalendarBar> {
                 onClick: (choseDate) {
                   setState(() {
                     date = choseDate;
+                    if (widget.setDate != null) {
+                      widget.setDate!(day);
+                    }
                   });
                 },
               );

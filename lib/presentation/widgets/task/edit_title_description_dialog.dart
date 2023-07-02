@@ -95,9 +95,7 @@ class _EditTitleDescriptionDialogState
                     isObscure: false,
                     hint: "Enter decription",
                     onSaved: (value) {
-                      if (value != null && value.trim().isNotEmpty) {
-                        _description = value;
-                      }
+                      _description = value;
                     },
                     text: _description,
                     validator: (value) {
